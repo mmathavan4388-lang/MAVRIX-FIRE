@@ -9,6 +9,7 @@ process.env.RAZORPAY_KEY_ID = 'rzp_test_key'; process.env.RAZORPAY_KEY_SECRET = 
 process.env.S3_BUCKET = 'b'; process.env.S3_ACCESS_KEY_ID = 'k'; process.env.S3_SECRET_ACCESS_KEY = 's'; process.env.S3_PUBLIC_BASE_URL = 'https://cdn.test';
 process.env.ADMIN_SETUP_TOKEN = 'setup-token-123'; process.env.NODE_ENV = 'test';
 
+if (!/test/i.test(new URL(process.env.DATABASE_URL).pathname)) throw new Error('Refusing to run: the tests DROP the schema, so the database name must contain "test".');
 const { pool, query } = await import('../src/db.js');
 const { migrate } = await import('../src/migrate.js');
 const { createApp } = await import('../src/app.js');
