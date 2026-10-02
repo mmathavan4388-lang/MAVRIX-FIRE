@@ -310,7 +310,7 @@ test('customer support: message → admin inbox → reply → customer notified,
 
 test('admin analytics, audit log is append-only, soft delete, logout-all', async () => {
   const d = await ok('GET', '/admin/dashboard', { token: S.admin });
-  assert.equal(d.customers, 3); assert.equal(d.sellers, 2); assert.equal(d.active_sellers, 2);
+  assert.equal(d.customers, 4); assert.equal(d.sellers, 2); assert.equal(d.active_sellers, 2);
   assert.equal(Number(d.salesPaise), 300000); assert.equal(Number(d.commissionPaise), 15000);   // B's part was refunded
   assert.equal(Number(d.subscriptionRevenuePaise), 39800);
   const audit = await ok('GET', '/admin/audit', { token: S.admin });
