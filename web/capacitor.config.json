@@ -1,0 +1,6 @@
+{
+  "appId": "com.sayrix.mavrixfire",
+  "appName": "MAVRIX FIRE",
+  "webDir": "dist",
+  "server": { "androidScheme": "https" }
+}

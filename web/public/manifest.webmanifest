@@ -1,0 +1,10 @@
+{
+  "name": "MAVRIX FIRE",
+  "short_name": "MAVRIX FIRE",
+  "description": "Sivakasi fireworks marketplace — from SAYRIX MATHAV",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7C3AED",
+  "icons": [{ "src": "/brand/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }]
+}
