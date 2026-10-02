@@ -75,6 +75,12 @@ const img = (shopId, n) => `https://cdn.test/products/${shopId}/${n}.webp`;
 
 test('admin: setup requires token, works once, then is closed forever', async () => {
   assert.equal((await ok('GET', '/admin/setup/status')).setupAvailable, true);
+  // An email already used by a customer must give an honest message, not "setup closed".
+  await ok('POST', '/auth/register', { body: { name: 'Early Customer', email: 'owner@example.com', password: 'password123' } });
+  const clash = await call('POST', '/admin/setup', { body: { email: 'owner@example.com', password: 'Str0ngPassword!x', confirmPassword: 'Str0ngPassword!x', setupToken: 'setup-token-123' } });
+  assert.equal(clash.status, 409); assert.equal(clash.body.error, 'email_in_use');
+  assert.equal((await ok('GET', '/admin/setup/status')).setupAvailable, true, 'a failed attempt must not close setup');
+  await query("update users set email = 'early@example.com' where email = 'owner@example.com'");
   const weak = await call('POST', '/admin/setup', { body: { email: 'owner@example.com', password: 'short', confirmPassword: 'short', setupToken: 'setup-token-123' } });
   assert.equal(weak.status, 400);
   const wrongTok = await call('POST', '/admin/setup', { body: { email: 'owner@example.com', password: 'Str0ngPassword!x', confirmPassword: 'Str0ngPassword!x', setupToken: 'nope' } });

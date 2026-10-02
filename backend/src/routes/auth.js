@@ -190,7 +190,8 @@ auth.post('/admin/setup', adminLoginLimiter, wrap(async (req, res) => {
     admin = await one(`insert into users (role, name, email, email_verified_at, password_hash) values ('admin','Administrator',$1,now(),$2) returning *`,
       [b.email.toLowerCase(), await hashPassword(b.password)]);
   } catch (e) {
-    if (e.code === '23505') throw new HttpError(403, 'setup_closed', 'Admin setup has already been completed');
+    if (e.code === '23505' && e.constraint === 'users_single_admin') throw new HttpError(403, 'setup_closed', 'Admin setup has already been completed');
+    if (e.code === '23505') throw new HttpError(409, 'email_in_use', 'This email is already registered as another account. Use a different email for the admin.');
     throw e;
   }
   req.user = { id: admin.id, role: 'admin' };
