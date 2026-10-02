@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Component, Suspense, lazy, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { useApp } from './store.jsx';
 import { storedLang, useT } from './i18n.jsx';
@@ -38,9 +38,25 @@ function Gate({ children }) {
   return children;
 }
 
+class Boundary extends Component {
+  state = { error: null };
+  static getDerivedStateFromError(error) { return { error }; }
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div style={{ padding: 24, textAlign: 'center', fontFamily: 'system-ui' }}>
+        <h2>Something went wrong</h2>
+        <p style={{ color: '#6b6b7b' }}>{String(this.state.error?.message || this.state.error)}</p>
+        <button className="btn primary" onClick={() => { window.location.href = '/'; }}>Reload</button>
+      </div>
+    );
+  }
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <Boundary>
       <Gate>
         <Suspense fallback={<Spinner />}>
         <Routes>
@@ -64,7 +80,7 @@ export default function App() {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="seller/register" element={<S.SellerRegister />} />
-          <Route path="seller" element={<PanelLayout role="seller" base="/seller" items={S.SELLER_NAV} />}>
+          <Route path="seller" element={<PanelLayout role="seller" base="/seller" items={SELLER_NAV} />}>
             <Route index element={<S.SellerDashboard />} />
             <Route path="products" element={<S.SellerProducts />} />
             <Route path="products/:id" element={<S.ProductForm />} />
@@ -77,7 +93,7 @@ export default function App() {
           </Route>
           <Route path="admin/setup" element={<A.AdminSetup />} />
           <Route path="admin/login" element={<A.AdminLogin />} />
-          <Route path="admin" element={<PanelLayout role="admin" base="/admin" items={A.ADMIN_NAV} />}>
+          <Route path="admin" element={<PanelLayout role="admin" base="/admin" items={ADMIN_NAV} />}>
             <Route index element={<A.AdminDashboard />} />
             <Route path="sellers" element={<A.AdminSellers />} />
             <Route path="customers" element={<A.AdminCustomers />} />
@@ -99,6 +115,7 @@ export default function App() {
         </Routes>
         </Suspense>
       </Gate>
+      </Boundary>
       <Toast />
     </BrowserRouter>
   );
