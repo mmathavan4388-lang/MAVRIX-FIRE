@@ -1,0 +1,14 @@
+{
+  "name": "mavrix-fire",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": ["backend", "web"],
+  "scripts": {
+    "migrate": "npm -w backend run migrate",
+    "start": "npm -w backend start",
+    "dev:api": "npm -w backend run dev",
+    "dev:web": "npm -w web run dev",
+    "build": "npm -w web run build",
+    "test": "npm -w backend test"
+  }
+}
